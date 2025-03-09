@@ -35,12 +35,12 @@ public class Count implements Visitor<Integer> {
 
     @Override
     public Integer onFill(final Fill c) {
-        return -1;
+        return 1;
     }
 
     @Override
     public Integer onLocation(final Location l) {
-        return -1;
+        return 1;
     }
 
     @Override
