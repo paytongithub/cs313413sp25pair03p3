@@ -24,6 +24,6 @@ public class StrokeColor implements Shape {
 
     @Override
     public <Result> Result accept(Visitor<Result> v) {
-        return this.getShape().accept(v);
+        return v.onStrokeColor(this);
     }
 }
