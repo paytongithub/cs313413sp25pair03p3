@@ -22,7 +22,7 @@ public class Count implements Visitor<Integer> {
 
     @Override
     public Integer onGroup(final Group g) {
-        Integer count = 0;
+        int count = 0;
         /*for(Iterator<? extends Shape> s = g.getShapes().iterator(); s.hasNext();){count++;}
         return count;*/
         for(int i = 0; i<g.getShapes().size(); i++){
@@ -38,21 +38,33 @@ public class Count implements Visitor<Integer> {
 
     @Override
     public Integer onOutline(final Outline o) {
+        if (o.getShape() instanceof  Group){
+            return onGroup((Group) o.getShape());
+        }
         return 1;
     }
 
     @Override
     public Integer onFill(final Fill c) {
+        if (c.getShape() instanceof  Group){
+            return onGroup((Group) c.getShape());
+        }
         return 1;
     }
 
     @Override
     public Integer onLocation(final Location l) {
+        if(l.getShape() instanceof Group) {
+            return onGroup((Group) l.getShape());
+        }
         return 1;
     }
 
     @Override
     public Integer onStrokeColor(final StrokeColor c) {
+        if(c.getShape() instanceof  Group){
+            return onGroup((Group) c.getShape());
+        }
         return 1;
     }
 }
