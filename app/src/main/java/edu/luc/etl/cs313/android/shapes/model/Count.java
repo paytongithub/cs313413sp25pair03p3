@@ -1,6 +1,6 @@
 package edu.luc.etl.cs313.android.shapes.model;
 
-import java.util.Iterator;
+
 
 /**
  * A visitor to compute the number of basic shapes in a (possibly complex)
@@ -25,9 +25,9 @@ public class Count implements Visitor<Integer> {
         int count = 0;
         /*for(Iterator<? extends Shape> s = g.getShapes().iterator(); s.hasNext();){count++;}
         return count;*/
-        for(int i = 0; i<g.getShapes().size(); i++){
-            count += g.getShapes().get(i).accept(this);
-        }
+        for (int i = 0; i < g.getShapes().size(); i++) {
+                count += g.getShapes().get(i).accept(this);
+            }
         return count;
     }
 
@@ -38,33 +38,34 @@ public class Count implements Visitor<Integer> {
 
     @Override
     public Integer onOutline(final Outline o) {
-        if (o.getShape() instanceof  Group){
-            return onGroup((Group) o.getShape());
+        if (o.getShape() instanceof  Group && !(o.getShape() instanceof Polygon)){
+            return o.accept(this);
         }
-        return 1;
-    }
+        return o.getShape().accept(this);}
+
 
     @Override
     public Integer onFill(final Fill c) {
-        if (c.getShape() instanceof  Group){
+        if ((c.getShape() instanceof  Group) && !(c.getShape() instanceof Polygon)){
             return onGroup((Group) c.getShape());
         }
-        return 1;
+        return c.getShape().accept(this);
     }
 
     @Override
     public Integer onLocation(final Location l) {
-        if(l.getShape() instanceof Group) {
+        if (l.getShape() instanceof Group && !(l.getShape() instanceof Polygon)){
             return onGroup((Group) l.getShape());
         }
-        return 1;
+        return l.getShape().accept(this);
     }
 
     @Override
     public Integer onStrokeColor(final StrokeColor c) {
-        if(c.getShape() instanceof  Group){
+        if (c.getShape() instanceof Group && !(c.getShape() instanceof Polygon)) {
             return onGroup((Group) c.getShape());
         }
-        return 1;
+        return c.getShape().accept(this);
+
     }
 }
