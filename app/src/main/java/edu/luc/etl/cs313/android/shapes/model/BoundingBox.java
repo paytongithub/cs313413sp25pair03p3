@@ -76,11 +76,11 @@ public class BoundingBox implements Visitor<Location> {
     @Override
     public Location onOutline(final Outline o) {
         final Location outlineLocation = o.getShape().accept(this);
-        return new Location (outlineLocation.getX(), outlineLocation.getY(), outlineLocation.getShape());
+        return new Location (outlineLocation.getX(), outlineLocation.getY(), new Rectangle(o.getShape().accept(this).getX(), o.getShape().accept(this).getY()));
     }
 
     @Override
     public Location onPolygon(final Polygon s) {
-        return null;
+        return onGroup((Group) s); // can just cast it as group and reuse
     }
 }
