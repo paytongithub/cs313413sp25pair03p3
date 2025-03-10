@@ -1,9 +1,12 @@
 package edu.luc.etl.cs313.android.shapes.android;
 
 import android.graphics.Canvas;
+import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import edu.luc.etl.cs313.android.shapes.model.*;
+
+import java.util.List;
 
 /**
  * A Visitor for drawing a shape to an Android canvas.
@@ -66,8 +69,18 @@ public class Draw implements Visitor<Void> {
 
     @Override
     public Void onPolygon(final Polygon s) {
-
-        final float[] pts = null;
+        List<? extends Point> pointList = s.getPoints();
+        Point firstpoint = pointList.get(0);
+        //grab first point to repeat it to fill in the last line.
+        float[] Coords = new float[2*pointList.size()+2];
+        for(int i = 0; i < pointList.size(); i++){
+            Coords[i] = pointList.get(i).getX();
+            Coords[i+1]=pointList.get(i).getY();
+        }
+        Coords[Coords.length-2] = firstpoint.getX();
+        Coords[Coords.length-1] = firstpoint.getY();
+        //naive attempt above.
+        final float[] pts = Coords;
 
         canvas.drawLines(pts, paint);
         return null;
