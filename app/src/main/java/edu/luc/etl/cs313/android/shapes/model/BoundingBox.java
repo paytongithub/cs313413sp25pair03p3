@@ -1,5 +1,7 @@
 package edu.luc.etl.cs313.android.shapes.model;
 
+import java.util.List;
+
 /**
  * A shape visitor for calculating the bounding box, that is, the smallest
  * rectangle containing the shape. The resulting bounding box is returned as a
@@ -17,19 +19,47 @@ public class BoundingBox implements Visitor<Location> {
 
     @Override
     public Location onFill(final Fill f) {
-        return null;
+        final Location fillLocation = f.getShape().accept(this);
+        return new Location (fillLocation.getX(), fillLocation.getY(), fillLocation.getShape());
     }
 
+
+    // Currently ONLY works for simple, need it to account for other shapes like StrokeColor, Polygons, Outlines
     @Override
     public Location onGroup(final Group g) {
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int maxY = Integer.MIN_VALUE;
 
-        return null;
+        for (Shape shape : g.getShapes()) {
+            Shape bbox = shape.accept(this);
+            if (bbox instanceof Location) {
+                Location loc = (Location) bbox;
+                Shape innerShape = loc.getShape();
+                if (innerShape instanceof Rectangle) {
+                    Rectangle rect = (Rectangle) innerShape;
+
+                    // Compute boundaries
+                    minX = Math.min(minX, loc.getX());
+                    minY = Math.min(minY, loc.getY());
+                    maxX = Math.max(maxX, loc.getX() + rect.getWidth());
+                    maxY = Math.max(maxY, loc.getY() + rect.getHeight());
+                }
+            }
+        }
+
+        int width = maxX - minX;
+        int height = maxY - minY;
+
+        return new Location(minX, minY, new Rectangle(width, height));
     }
 
     @Override
     public Location onLocation(final Location l) {
+        final Location innerBox = l.getShape().accept(this); // Shape at the location
 
-        return null;
+        return new Location (l.getX() + innerBox.getX(), l.getY() + innerBox.getY(), innerBox.getShape());
     }
 
     @Override
@@ -39,12 +69,14 @@ public class BoundingBox implements Visitor<Location> {
 
     @Override
     public Location onStrokeColor(final StrokeColor c) {
-        return null;
+        final Location strokeColorLocation = c.getShape().accept(this);
+        return new Location (strokeColorLocation.getX(), strokeColorLocation.getY(), strokeColorLocation.getShape());
     }
 
     @Override
     public Location onOutline(final Outline o) {
-        return null;
+        final Location outlineLocation = o.getShape().accept(this);
+        return new Location (outlineLocation.getX(), outlineLocation.getY(), outlineLocation.getShape());
     }
 
     @Override
