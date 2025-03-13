@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import edu.luc.etl.cs313.android.shapes.model.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -86,18 +87,18 @@ public class Draw implements Visitor<Void> {
     @Override
     public Void onPolygon(final Polygon s) {
         List<? extends Point> pointList = s.getPoints();
-        Point firstpoint = pointList.get(0);
+        float[] firstpoints = {pointList.get(0).getX(), pointList.get(0).getY()};
         //grab first point to repeat it to fill in the last line.
-        float[] Coords = new float[2*pointList.size()+2];
+        float[] Coords = new float[4*pointList.size()];
         for(int i = 0; i < pointList.size(); i++){
-            Coords[i] = pointList.get(i).getX();
-            Coords[i+1]=pointList.get(i).getY();
+            Coords[4*i]  = Coords[4*i+2] = pointList.get(i).getX();
+            Coords[4*i+1]= Coords[4*i+3] = pointList.get(i).getY();
         }
-        Coords[Coords.length-2] = firstpoint.getX();
-        Coords[Coords.length-1] = firstpoint.getY();
-        //naive attempt above.
-        final float[] pts = Coords;
-
+        final float[] pts = new float[Coords.length];
+        System.arraycopy(firstpoints, 0, pts, Coords.length-2, 2);
+        //adds first points at the end of the pts array
+        System.arraycopy(Coords, 2, pts, 0, Coords.length-2);
+        //grabs the remaining points and fills in the rest of the pts array
         canvas.drawLines(pts, paint);
         return null;
     }
