@@ -1,12 +1,10 @@
 package edu.luc.etl.cs313.android.shapes.android;
 
 import android.graphics.Canvas;
-import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import edu.luc.etl.cs313.android.shapes.model.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -65,6 +63,7 @@ public class Draw implements Visitor<Void> {
         canvas.save();
         canvas.translate(l.getX(), l.getY());
         l.getShape().accept(this);
+        canvas.translate(-l.getX(), -l.getY());//added code to translate back.
         canvas.restore();
         return null;
     }
@@ -91,6 +90,7 @@ public class Draw implements Visitor<Void> {
         //grab first point to repeat it to fill in the last line.
         float[] Coords = new float[4*pointList.size()];
         for(int i = 0; i < pointList.size(); i++){
+            //repeats adding all the unpacked points in the polygon twice
             Coords[4*i]  = Coords[4*i+2] = pointList.get(i).getX();
             Coords[4*i+1]= Coords[4*i+3] = pointList.get(i).getY();
         }

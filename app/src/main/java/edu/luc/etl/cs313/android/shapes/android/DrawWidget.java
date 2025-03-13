@@ -35,7 +35,8 @@ public class DrawWidget extends View {
     @SuppressLint("DrawAllocation")
     protected void onDraw(final Canvas canvas) {
         //final var shape = Fixtures.simpleCircle; //original
-        final var shape = Fixtures.complexGroup;
+        //final var shape = Fixtures.middleGroup;
+        final var shape = Fixtures.complexGroup; //final
         final var b = shape.accept(new BoundingBox());
         canvas.translate(-b.getX(), -b.getY());
         b.accept(new Draw(canvas, paint));
